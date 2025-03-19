@@ -19,6 +19,34 @@ export default function RootLayout() {
             },
           }}
         />
+        <Stack.Screen
+          name="custom-values"
+          options={{
+            title: "Custom Values",
+            headerStyle: {
+              backgroundColor: "#f4511e",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+            headerShown: false, // We'll handle our own back button
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{
+            title: "Settings",
+            headerStyle: {
+              backgroundColor: "#f4511e",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+            headerShown: false, // We'll handle our own back button
+          }}
+        />
       </Stack>
     </>
   );

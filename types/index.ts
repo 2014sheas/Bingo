@@ -3,6 +3,7 @@ export interface Cell {
   id: number;
   value: string;
   isMarked: boolean;
+  isFreeSpace?: boolean;
 }
 
 // Props for the BingoCard component

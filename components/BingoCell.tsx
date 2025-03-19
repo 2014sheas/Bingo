@@ -1,19 +1,39 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, Dimensions } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Dimensions,
+  View,
+} from "react-native";
 import { BingoCellProps } from "../types";
 
 const BingoCell: React.FC<BingoCellProps> = ({ cell, onPress }) => {
+  // Check if the cell is the free space based on its properties
+  const isFreeSpace = cell.isFreeSpace;
+
+  // Check if the value is custom text (not in B1-O75 format)
+  const isCustomValue = !isFreeSpace && !/^[BINGO]\d+$/.test(cell.value);
+
   return (
     <TouchableOpacity
       style={[
         styles.cell,
         cell.isMarked && styles.marked,
-        cell.value === "FREE" && styles.freeSpace,
+        isFreeSpace && styles.freeSpace,
       ]}
       onPress={onPress}
-      disabled={cell.value === "FREE"} // Optional: disable the free space
+      disabled={isFreeSpace} // Disable the free space
     >
-      <Text style={[styles.text, cell.isMarked && styles.markedText]}>
+      <Text
+        style={[
+          styles.text,
+          cell.isMarked && styles.markedText,
+          isCustomValue && styles.customText,
+        ]}
+        numberOfLines={3}
+        ellipsizeMode="tail"
+      >
         {cell.value}
       </Text>
     </TouchableOpacity>
@@ -35,6 +55,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: "#ddd",
+    padding: 4,
   },
   marked: {
     backgroundColor: "#4a86e8",
@@ -45,6 +66,10 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  customText: {
+    fontSize: 12,
   },
   markedText: {
     color: "#ffffff",

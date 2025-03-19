@@ -3,7 +3,20 @@ import { Cell } from "../types";
 /**
  * Generate bingo card values using standard bingo patterns
  */
-export function generateBingoValues(): string[] {
+export function generateBingoValues(
+  customValues?: string[],
+  showFreeSpace: boolean = true,
+  freeSpaceText: string = "FREE"
+): string[] {
+  if (customValues && customValues.length >= 25) {
+    return generateCustomBingoValues(
+      customValues,
+      showFreeSpace,
+      freeSpaceText
+    );
+  }
+
+  // Standard bingo with B1-O75 format
   // B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75
   const columns = [
     generateNumbersInRange(1, 15), // B
@@ -17,13 +30,49 @@ export function generateBingoValues(): string[] {
   const values: string[] = [];
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 5; j++) {
-      const letter = "BINGO"[j];
-      const value = j === 2 && i === 2 ? "FREE" : `${letter}${columns[j][i]}`;
-      values.push(value);
+      // Center position is row 2, column 2 (0-indexed)
+      const isCenterPosition = j === 2 && i === 2;
+
+      if (isCenterPosition && showFreeSpace) {
+        values.push(freeSpaceText);
+      } else {
+        // For regular cells, including center when free space is disabled
+        const letter = "BINGO"[j];
+        values.push(`${letter}${columns[j][i]}`);
+      }
     }
   }
 
   return values;
+}
+
+/**
+ * Generate custom bingo card with user-provided values
+ */
+function generateCustomBingoValues(
+  customValues: string[],
+  showFreeSpace: boolean = true,
+  freeSpaceText: string = "FREE"
+): string[] {
+  // Make a copy and shuffle the array
+  const shuffled = [...customValues].sort(() => 0.5 - Math.random());
+
+  if (showFreeSpace) {
+    // Pick the first 24 values (saving space for FREE in the middle)
+    const selectedValues = shuffled.slice(0, 24);
+
+    // Create the final array with custom FREE text in the middle (12th position)
+    const result = [
+      ...selectedValues.slice(0, 12),
+      freeSpaceText,
+      ...selectedValues.slice(12),
+    ];
+
+    return result;
+  } else {
+    // Without a free space, just take 25 values
+    return shuffled.slice(0, 25);
+  }
 }
 
 /**
